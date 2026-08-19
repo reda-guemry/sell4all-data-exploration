@@ -1,0 +1,23 @@
+{
+  "name": "project-selection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reda-guemry/Selection-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/reda-guemry/Selection-Project/issues"
+  },
+  "homepage": "https://github.com/reda-guemry/Selection-Project#readme",
+  "dependencies": {
+    "chart.js": "^4.5.1"
+  }
+}
