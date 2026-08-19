@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/reda-guemry/Selection-Project#readme",
   "dependencies": {
-    "chart.js": "^4.5.1"
+    "chart.js": "^4.5.1",
+    "csv-parse": "^7.0.2",
+    "csv-writer": "^1.6.0"
   }
 }
