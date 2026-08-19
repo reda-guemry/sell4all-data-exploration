@@ -55,6 +55,10 @@ data.forEach(row => {
     countryAge[country].push(row.Age) ;
 })
 
+Object.entries(countryAge).forEach(([country , ages ]) => {
+    console.log(`Median of customer ages in ${country}: ` , calculateMedian(ages)) ;
+})
+
 
 
 
