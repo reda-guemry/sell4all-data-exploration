@@ -12,7 +12,7 @@ fetch("http://localhost:10000/api/countries/spendings")
         labels: countries,
         datasets: [
           {
-            label: "Average Spendings by Country",
+            label: "Customer Spendings by Country",
             data: ages,
             backgroundColor: "rgba(75, 192, 192, 0.2)",
             borderColor: "rgba(75, 192, 192, 1)",
@@ -22,14 +22,15 @@ fetch("http://localhost:10000/api/countries/spendings")
       },
 
       options: {
-        responsive: true,
+        indexAxis: 'y' , 
+        responsive: true,        
         plugins: {
           legend: {
             position: "top",
           },
           title: {
             display: true,
-            text: "Average Spendings by Country",
+            text: "Customer Spendings by Country",
           },
         },
         scales: {
@@ -39,6 +40,5 @@ fetch("http://localhost:10000/api/countries/spendings")
         },
       },
     });
-    
   })
   .catch((err) => console.error(err));

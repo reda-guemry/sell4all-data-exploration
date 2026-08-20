@@ -8,7 +8,6 @@ const groupAgesByCountry = require("./functions/groupAgesByCountry");
 const calculateSpendingsByCountry = require("./functions/calculateSpendingsByCountry");
 
 const server = http.createServer((req, res) => {
-
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -25,18 +24,17 @@ const server = http.createServer((req, res) => {
       skipEmptyLines: true,
     });
 
-    let agesByCountry = groupAgesByCountry(data);
+    data.forEach((row) => {
+      row.Age = Number(row.Age);
+      row["Customer spendings"] = Number(row["Customer spendings"]);
+    });
 
     
-
-    Object.entries(agesByCountry).forEach(([country, ages]) => {
-        agesByCountry[country] = calculateMoyenne(ages) ; 
-    });
+    let spendingsByCountry = calculateSpendingsByCountry(data);
 
     res.setHeader("Content-Type", "application/json");
 
-    res.end(JSON.stringify(agesByCountry)) ;
-
+    res.end(JSON.stringify(spendingsByCountry));
   }
 });
 
@@ -70,11 +68,3 @@ server.listen(10000, () => {
 // });
 
 // console.log('\nTotal customer spendings by country: ' , calculateSpendingsByCountry(data)) ;
-
-// data.forEach((row) => {
-    //   row.Age = Number(row.Age);
-    //   row["Customer spendings"] = Number(row["Customer spendings"]);
-    // });
-
-
-    
