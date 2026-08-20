@@ -2,10 +2,13 @@ const http = require("http");
 const fs = require("fs");
 const { parse } = require("csv-parse/sync");
 
+const calculateSpendingsByCountry = require("./functions/calculateSpendingsByCountry");
 const calculateMedian = require("./functions/calculateMedian");
 const calculateMoyenne = require("./functions/calculateMoyene");
 const groupAgesByCountry = require("./functions/groupAgesByCountry");
-const calculateSpendingsByCountry = require("./functions/calculateSpendingsByCountry");
+const removeDuplicates = require("./functions/removeDuplicates");
+const deleteSpendingless = require("./functions/deleteSpendingless");
+
 
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -29,13 +32,17 @@ const server = http.createServer((req, res) => {
       row["Customer spendings"] = Number(row["Customer spendings"]);
     });
 
-    
+
     let spendingsByCountry = calculateSpendingsByCountry(data);
 
     res.setHeader("Content-Type", "application/json");
 
     res.end(JSON.stringify(spendingsByCountry));
   }
+
+  
+
+
 });
 
 server.listen(10000, () => {
