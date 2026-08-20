@@ -1,24 +1,4 @@
-
 const fs = require("fs");
-const { parse } = require("csv-parse/sync");
-
-
-const removeDuplicates = require("./removeDuplicates");
-const deleteSpendingless = require("./deleteSpendingless");
-
-const csvFile = fs.readFileSync("data/dataset-sell4all.csv", "utf-8");
-
-const data = parse(csvFile, {
-  columns: true,
-  skipEmptyLines: true,
-});
-
-data.forEach((row) => {
-  row.Age = Number(row.Age);
-  row["Customer spendings"] = Number(row["Customer spendings"]);
-});
-
-
 
 function exportFichierClean(data) {
     data = data.map((row) => {
@@ -57,8 +37,5 @@ function exportFichierClean(data) {
 
 }
 
-let cleanedData = removeDuplicates(data) ; 
-cleanedData = deleteSpendingless(cleanedData) ;
-
-exportFichierClean(cleanedData) ;
+module.exports = exportFichierClean ;
 
