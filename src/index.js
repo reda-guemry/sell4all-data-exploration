@@ -3,7 +3,8 @@ const { parse } = require('csv-parse/sync')
 
 const calculateMedian = require('./functions/calculateMedian')
 const calculateMoyenne = require('./functions/calculateMoyene') 
-
+const groupAgesByCountry = require('./functions/groupAgesByCountry')
+const calculateSpendingsByCountry = require('./functions/calculateSpendingsByCountry')
 
 
 const csvFile = fs.readFileSync('data/dataset-sell4all.csv' , 'utf-8')
@@ -43,19 +44,9 @@ console.log('\nMedian of customer spendings: ' , calculateMedian(data.map(row =>
 
 
 
-const countryAge = {} ; 
 
-data.forEach(row => {
-    const country = row.Country ; 
 
-    if(!countryAge[country]) {
-        countryAge[country] = [] ; 
-    }
-
-    countryAge[country].push(row.Age) ;
-})
-
-Object.entries(countryAge).forEach(([country , ages ]) => {
+Object.entries(groupAgesByCountry(data)).forEach(([country , ages ]) => {
     console.log(`Median of customer ages in ${country}: ` , calculateMedian(ages)) ;
 })
 
@@ -69,3 +60,4 @@ Object.entries(countryAge).forEach(([country , ages ]) => {
 
 
 
+console.log('\nTotal customer spendings by country: ' , calculateSpendingsByCountry(data)) ;
