@@ -1,21 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Sell4All Data Visualization</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sell4All | Customer Data Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">S4</div>
+          <div class="brand-copy">
+            <p class="brand-name">Sell4All</p>
+            <p class="brand-subtitle">Customer Data Analytics</p>
+          </div>
+        </div>
 
-<body>
+        <a
+          id="download-btn"
+          class="btn-download"
+          href="/download/cleaned-dataset"
+          download="cleaned_dataset.csv"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Download Clean Data</span>
+        </a>
+      </div>
+    </header>
 
-    <h1>Sell4All - Customer Spendings by Country</h1>
+    <main class="page">
+      <div id="error-banner" class="error-banner" hidden>
+        Unable to load analytics. Confirm the Node.js server is running.
+      </div>
 
-    <canvas id="spendingsChart"></canvas>
+      <section class="kpi-grid" aria-label="Key performance indicators">
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <p class="kpi-title">Total Customers</p>
+          <p class="kpi-value" data-kpi="totalCustomers">—</p>
+          <p class="kpi-hint">Original records in the dataset</p>
+        </article>
 
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <circle cx="12" cy="16" r="2" />
+            </svg>
+          </div>
+          <p class="kpi-title">Average Age</p>
+          <p class="kpi-value">
+            <span data-kpi="averageAge">—</span>
+            <span class="kpi-unit">years</span>
+          </p>
+          <p class="kpi-hint">Mean customer age</p>
+        </article>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
-<script src="../src/chart/chart.js"></script>
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <p class="kpi-title">Median Age</p>
+          <p class="kpi-value">
+            <span data-kpi="medianAge">—</span>
+            <span class="kpi-unit">years</span>
+          </p>
+          <p class="kpi-hint">Midpoint of the age distribution</p>
+        </article>
 
-</body>
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <circle cx="12" cy="12" r="2.5" />
+              <path d="M6 12h.01M18 12h.01" />
+            </svg>
+          </div>
+          <p class="kpi-title">Average Spendings</p>
+          <p class="kpi-value">
+            <span data-kpi="averageSpendings">—</span>
+            <span class="kpi-unit">€</span>
+          </p>
+          <p class="kpi-hint">Mean customer spendings</p>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 19V5" />
+              <path d="M4 19h16" />
+              <path d="M8 16l3-5 3 3 5-8" />
+            </svg>
+          </div>
+          <p class="kpi-title">Median Spendings</p>
+          <p class="kpi-value">
+            <span data-kpi="medianSpendings">—</span>
+            <span class="kpi-unit">€</span>
+          </p>
+          <p class="kpi-hint">Midpoint of customer spendings</p>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M3 12h18" />
+              <path d="M12 3a14 14 0 0 1 0 18" />
+              <path d="M12 3a14 14 0 0 0 0 18" />
+            </svg>
+          </div>
+          <p class="kpi-title">Countries</p>
+          <p class="kpi-value" data-kpi="countries">—</p>
+          <p class="kpi-hint">Unique countries in the dataset</p>
+        </article>
+      </section>
+
+      <section class="panel chart-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Customer Spendings by Country</h2>
+            <p id="spendings-caption" class="panel-caption">
+              Total customer spendings in euros
+            </p>
+          </div>
+        </div>
+        <div class="chart-frame chart-frame-tall">
+          <canvas id="spendingsChart" aria-label="Customer spendings by country"></canvas>
+        </div>
+      </section>
+
+      <section class="secondary-grid">
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Median Age by Country</h2>
+              <p class="panel-caption">Median customer age for each market</p>
+            </div>
+          </div>
+          <div class="chart-frame chart-frame-tall">
+            <canvas id="medianAgeChart" aria-label="Median age by country"></canvas>
+          </div>
+        </article>
+
+        <article class="panel overview-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Dataset Overview</h2>
+              <p class="panel-caption">Cleaning pipeline applied to the source CSV</p>
+            </div>
+          </div>
+
+          <ol class="pipeline">
+            <li class="pipeline-step">
+              <span class="pipeline-index">01</span>
+              <div>
+                <p class="pipeline-label">Original rows</p>
+                <p class="pipeline-value" data-overview="originalRows">—</p>
+                <p class="pipeline-hint">Source file: dataset-sell4all.csv</p>
+              </div>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">02</span>
+              <div>
+                <p class="pipeline-label">Rows after removing spending &lt; 10€</p>
+                <p class="pipeline-value" data-overview="rowsAfterSpendingFilter">—</p>
+                <p class="pipeline-hint" data-overview-hint="spending">Low-value records excluded</p>
+              </div>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">03</span>
+              <div>
+                <p class="pipeline-label">Rows after removing duplicates</p>
+                <p class="pipeline-value" data-overview="rowsAfterDuplicates">—</p>
+                <p class="pipeline-hint" data-overview-hint="duplicates">Duplicate customers removed</p>
+              </div>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">04</span>
+              <div>
+                <p class="pipeline-label">Final cleaned rows</p>
+                <p class="pipeline-value" data-overview="finalCleanedRows">—</p>
+                <p class="pipeline-hint">Exported to cleaned_dataset.csv</p>
+              </div>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">05</span>
+              <div>
+                <p class="pipeline-label">Number of columns exported</p>
+                <p class="pipeline-value" data-overview="exportedColumns">—</p>
+                <p class="pipeline-hint">Country, Age, Gender, Customer spendings</p>
+              </div>
+            </li>
+          </ol>
+        </article>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Sell4All data exploration · values computed by the Node.js API
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./dashboard.js"></script>
+  </body>
 </html>
