@@ -26,8 +26,8 @@ export function getCustomerSpendingsByCountry() {
   return fetchJson("/api/countries/spendings");
 }
 
-export function getCustomerCountByCountry() {
-  return fetchJson("/api/countries/customers");
+export function getMedianAgeByCountry() {
+  return fetchJson("/api/countries/median-age");
 }
 
 export function getFirstFiveCustomers() {
@@ -36,4 +36,8 @@ export function getFirstFiveCustomers() {
 
 export function getAgeData() {
   return fetchJson("/api/ages/distribution");
+}
+
+export function getDisconnectionsByMonth() {
+  return fetchJson("/api/disconnections/by-month");
 }

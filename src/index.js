@@ -6,7 +6,6 @@ const { parse } = require("csv-parse/sync");
 const calculateSpendingsByCountry = require("./functions/calculateSpendingsByCountry");
 const calculateMedian = require("./functions/calculateMedian");
 const calculateMoyenne = require("./functions/calculateMoyene");
-const calculateCustomersByCountry = require("./functions/calculateCustomersByCountry");
 const calculateAgeDistribution = require("./functions/calculateAgeDistribution");
 const groupAgesByCountry = require("./functions/groupAgesByCountry");
 const deleteSpendingless = require("./functions/deleteSpendingless");
@@ -14,6 +13,8 @@ const removeDuplicates = require("./functions/removeDuplicates");
 const exportFichierClean = require("./functions/exportFichierclean");
 const sendJson = require("./reponse/sendJson");
 const sendFile = require("./reponse/sendFile");
+const parseConnectionDate = require("./functions/parseConnectionDate");
+const calculateDisconnectionsByMonth = require("./functions/calculateDisconnectionsByMonth");
 
 const ROOT_DIR = path.join(__dirname, "..");
 const DATA_PATH = path.join(ROOT_DIR, "data", "dataset-sell4all.csv");
@@ -38,9 +39,29 @@ function loadNumericData() {
   data.forEach((row) => {
     row.Age = Number(row.Age);
     row["Customer spendings"] = Number(row["Customer spendings"]);
+    row['Last date of connection'] = parseConnectionDate(row['Last date of connection']);
   });
 
   return data;
+}
+
+function getDataType(column, value) {
+    if (value instanceof Date) {
+        return "date";
+    }
+
+
+    if (column === "Last time of connection") {
+        return "time";
+    }
+
+
+    if (typeof value === "number") {
+        return "number";
+    }
+
+
+    return "string";
 }
 
 function getColumnDataTypes(data) {
@@ -48,7 +69,7 @@ function getColumnDataTypes(data) {
   const dataTypes = {};
 
   columns.forEach((column) => {
-    const types = new Set(data.map((row) => typeof row[column]));
+    const types = new Set(data.map((row) => getDataType(column, row[column])));
 
     if (types.size === 1) {
       dataTypes[column] = [...types][0];
@@ -139,23 +160,11 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    if (pathname === "/api/countries/customers") {
-      const data = loadNumericData();
-      sendJson(res, calculateCustomersByCountry(data));
-      return;
-    }
-
     if (pathname === "/api/customers/first-five") {
       const data = loadNumericData();
-      const firstFive = data.slice(0, 5).map((row) => ({
-        name: row.Name,
-        country: row.Country,
-        age: row.Age,
-        gender: row.Gender,
-        spendings: row["Customer spendings"],
-      }));
-      sendJson(res, firstFive);
-      return;
+
+      sendJson(res, data.slice(0, 5));
+            return;
     }
 
     if (pathname === "/api/ages/distribution") {
@@ -174,6 +183,12 @@ const server = http.createServer((req, res) => {
         "text/csv; charset=utf-8",
         "cleaned_dataset.csv"
       );
+      return;
+    }
+
+    if (pathname === "/api/disconnections/by-month") {
+      const data = loadNumericData();
+      sendJson(res, calculateDisconnectionsByMonth(data));
       return;
     }
 

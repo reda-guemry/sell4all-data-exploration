@@ -135,3 +135,68 @@ export function createAgeDistributionChart(labels, values) {
     },
   });
 }
+
+export function createDisconnectionsLineChart(canvas, labels, values) {
+  if (!canvas) {
+    return;
+  }
+
+  destroyChart(canvas.id);
+
+  chartInstances[canvas.id] = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Customers",
+          data: values,
+          borderColor: "#0f766e",
+          backgroundColor: "rgba(15, 118, 110, 0.12)",
+          pointBackgroundColor: "#0f766e",
+          pointBorderColor: "#0f766e",
+          pointRadius: 4,
+          pointHoverRadius: 5,
+          tension: 0.2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#122033",
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: (context) =>
+              ` ${Number(context.parsed.y).toLocaleString("en-US")} customers`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: "#eef2f4" },
+          title: {
+            display: true,
+            text: "Month",
+            color: "#122033",
+            font: { size: 12, weight: "600" },
+          },
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: "#eef2f4" },
+          title: {
+            display: true,
+            text: "Number of customers",
+            color: "#122033",
+            font: { size: 12, weight: "600" },
+          },
+        },
+      },
+    },
+  });
+}

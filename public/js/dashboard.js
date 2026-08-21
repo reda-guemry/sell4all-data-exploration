@@ -1,25 +1,20 @@
 import {
   getAgeData,
-  getCustomerCountByCountry,
   getCustomerSpendingsByCountry,
   getDashboardStats,
+  getDisconnectionsByMonth,
   getFirstFiveCustomers,
+  getMedianAgeByCountry,
   getSummary,
 } from "./api.js";
 
-console.log(await getSummary());
-
 import {
   createAgeDistributionChart,
+  createDisconnectionsLineChart,
   createHorizontalBarChart,
 } from "./charts.js";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
-const euroFormatter = new Intl.NumberFormat("fr-FR", {
-  style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 2,
-});
 
 function setText(selector, value) {
   const node = document.querySelector(selector);
@@ -58,21 +53,58 @@ function updateKpis(kpis) {
   setText('[data-kpi="countries"]', numberFormatter.format(kpis.countries));
 }
 
-function renderFirstFiveCustomers(customers) {
-  const tableBody = document.getElementById("first-five-body");
-  if (!tableBody) {
-    return;
+function formatFirstFiveValue(column, value) {
+  if (column !== "Last date of connection" || value == null || value === "") {
+    return value ?? "";
   }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function renderFirstFiveCustomers(customers, dataTypes) {
+  const tableHead = document.getElementById("first-five-head");
+  const tableBody = document.getElementById("first-five-body");
+  if (!tableHead || !tableBody || customers.length === 0) {
+    return; 
+  }
+
+  const columns = Object.keys(customers[0]);
+
+  tableHead.innerHTML = columns
+    .map((column) => {
+      const type = dataTypes[column];
+      const typeMarkup = type
+        ? `<span class="ml-1 text-[10px] font-normal tracking-normal text-slate-400">(${type})</span>`
+        : "";
+
+      return `<th class="px-4 py-3 whitespace-nowrap">${column}${typeMarkup}</th>`;
+    })
+    .join("");
 
   tableBody.innerHTML = customers
     .map(
       (customer) => `
         <tr class="border-b border-slate-100 last:border-0">
-          <td class="px-4 py-3 font-medium text-slate-800">${customer.name}</td>
-          <td class="px-4 py-3 text-slate-600">${customer.country}</td>
-          <td class="px-4 py-3 text-slate-600">${customer.age}</td>
-          <td class="px-4 py-3 text-slate-600">${customer.gender}</td>
-          <td class="px-4 py-3 text-right font-semibold text-slate-800">${euroFormatter.format(customer.spendings)}</td>
+          ${columns
+            .map(
+              (column, index) => `
+                <td class="px-4 py-3 whitespace-nowrap ${
+                  index === 0
+                    ? "font-medium text-slate-800"
+                    : "text-slate-600"
+                }">${formatFirstFiveValue(column, customer[column])}</td>
+              `,
+            )
+            .join("")}
         </tr>
       `,
     )
@@ -86,16 +118,20 @@ async function initDashboard() {
   const results = await Promise.allSettled([
     getDashboardStats(),
     getCustomerSpendingsByCountry(),
-    getCustomerCountByCountry(),
+    getMedianAgeByCountry(),
     getAgeData(),
     getFirstFiveCustomers(),
+    getDisconnectionsByMonth(),
+    getSummary(),
   ]);
 
   const kpis = unwrap(results[0]);
   const spendings = unwrap(results[1]);
-  const customersByCountry = unwrap(results[2]);
+  const medianAgeByCountry = unwrap(results[2]);
   const ageDistribution = unwrap(results[3]);
   const firstFive = unwrap(results[4]);
+  const disconnectionsByMonth = unwrap(results[5]);
+  const summary = unwrap(results[6]);
 
 
 
@@ -104,7 +140,7 @@ async function initDashboard() {
   }
 
   if (firstFive) {
-    renderFirstFiveCustomers(firstFive);
+    renderFirstFiveCustomers(firstFive, summary?.dataTypes || {});
   }
 
   if (spendings) {
@@ -126,24 +162,33 @@ async function initDashboard() {
     );
   }
 
-  if (customersByCountry) {
-    const usageEntries = sortDescending(customersByCountry);
+  if (medianAgeByCountry) {
+    const medianAgeEntries = sortDescending(medianAgeByCountry);
 
-    createHorizontalBarChart("countriesUsageChart", 
-      usageEntries.map(([country]) => country),
-      usageEntries.map(([, value]) => value),
+    createHorizontalBarChart(
+      "medianAgeChart",
+      medianAgeEntries.map(([country]) => country),
+      medianAgeEntries.map(([, value]) => value),
       {
-      label: "Number of customers",
-      tickFormatter: (value) => `${Math.round(value)}`,
-      tooltipFormatter: (value) =>
-        `${Number(value).toLocaleString("en-US")} customers`,
-    });
+        label: "Median age (years)",
+        tickFormatter: (value) => `${value}`,
+        tooltipFormatter: (value) => `${value} years`,
+      },
+    );
   }
 
   if (ageDistribution) {
     createAgeDistributionChart(
       Object.keys(ageDistribution),
       Object.values(ageDistribution),
+    );
+  }
+
+  if (disconnectionsByMonth) {
+    createDisconnectionsLineChart(
+      document.getElementById("disconnectionsChart"),
+      Object.keys(disconnectionsByMonth),
+      Object.values(disconnectionsByMonth),
     );
   }
 
