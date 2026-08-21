@@ -6,9 +6,12 @@ const { parse } = require("csv-parse/sync");
 const calculateSpendingsByCountry = require("./functions/calculateSpendingsByCountry");
 const calculateMedian = require("./functions/calculateMedian");
 const calculateMoyenne = require("./functions/calculateMoyene");
+const calculateCustomersByCountry = require("./functions/calculateCustomersByCountry");
+const calculateAgeDistribution = require("./functions/calculateAgeDistribution");
 const groupAgesByCountry = require("./functions/groupAgesByCountry");
-const removeDuplicates = require("./functions/removeDuplicates");
 const deleteSpendingless = require("./functions/deleteSpendingless");
+const removeDuplicates = require("./functions/removeDuplicates");
+const exportFichierClean = require("./functions/exportFichierclean");
 const sendJson = require("./reponse/sendJson");
 const sendFile = require("./reponse/sendFile");
 
@@ -38,6 +41,28 @@ function loadNumericData() {
   });
 
   return data;
+}
+
+function getColumnDataTypes(data) {
+  const columns = Object.keys(data[0] || {});
+  const dataTypes = {};
+
+  columns.forEach((column) => {
+    const types = new Set(data.map((row) => typeof row[column]));
+
+    if (types.size === 1) {
+      dataTypes[column] = [...types][0];
+    } else {
+      dataTypes[column] = "mixed";
+    }
+  });
+
+  return dataTypes;
+}
+
+function cleanCustomerData(data) {
+  const withoutLowSpendings = deleteSpendingless(data);
+  return removeDuplicates(withoutLowSpendings);
 }
 
 
@@ -89,6 +114,18 @@ const server = http.createServer((req, res) => {
       return;
     }
 
+    if (pathname === "/api/summary") {
+      const data = loadNumericData();
+      const columns = Object.keys(data[0] || {});
+
+      sendJson(res, {
+        rowCount: data.length,
+        columns,
+        dataTypes: getColumnDataTypes(data),
+      });
+      return;
+    }
+
     if (pathname === "/api/countries/median-age") {
       const data = loadNumericData();
       const agesByCountry = groupAgesByCountry(data);
@@ -102,22 +139,35 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    if (pathname === "/api/dataset/overview") {
+    if (pathname === "/api/countries/customers") {
       const data = loadNumericData();
-      const afterSpendingFilter = deleteSpendingless(data);
-      const afterDuplicates = removeDuplicates(afterSpendingFilter);
+      sendJson(res, calculateCustomersByCountry(data));
+      return;
+    }
 
-      sendJson(res, {
-        originalRows: data.length,
-        rowsAfterSpendingFilter: afterSpendingFilter.length,
-        rowsAfterDuplicates: afterDuplicates.length,
-        finalCleanedRows: afterDuplicates.length,
-        exportedColumns: 4,
-      });
+    if (pathname === "/api/customers/first-five") {
+      const data = loadNumericData();
+      const firstFive = data.slice(0, 5).map((row) => ({
+        name: row.Name,
+        country: row.Country,
+        age: row.Age,
+        gender: row.Gender,
+        spendings: row["Customer spendings"],
+      }));
+      sendJson(res, firstFive);
+      return;
+    }
+
+    if (pathname === "/api/ages/distribution") {
+      const data = loadNumericData();
+      sendJson(res, calculateAgeDistribution(data));
       return;
     }
 
     if (pathname === "/download/cleaned-dataset") {
+      const data = loadNumericData();
+      const cleanedData = cleanCustomerData(data);
+      exportFichierClean(cleanedData, CLEANED_PATH);
       sendFile(
         res,
         CLEANED_PATH,

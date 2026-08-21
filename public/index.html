@@ -10,230 +10,336 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: "#0f766e",
+                dark: "#0b5f59",
+                light: "#e7f4f2",
+              },
+              ink: "#122033",
+              page: "#f4f6f8",
+            },
+            fontFamily: {
+              sans: ["Manrope", "system-ui", "sans-serif"],
+            },
+            boxShadow: {
+              card: "0 8px 24px rgba(18, 32, 51, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body>
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <div class="brand-mark" aria-hidden="true">S4</div>
-          <div class="brand-copy">
-            <p class="brand-name">Sell4All</p>
-            <p class="brand-subtitle">Customer Data Analytics</p>
-          </div>
-        </div>
+  <body class="min-h-screen overflow-x-hidden bg-page font-sans text-ink antialiased">
+    <div
+      id="sidebar-overlay"
+      class="fixed inset-0 z-30 hidden bg-slate-900/30 lg:hidden"
+    ></div>
 
-        <a
-          id="download-btn"
-          class="btn-download"
-          href="/download/cleaned-dataset"
-          download="cleaned_dataset.csv"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-40 flex w-60 -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform lg:translate-x-0"
+    >
+      <div class="flex items-center justify-between px-5 py-5">
+        <div class="flex items-center gap-3">
+          <div
+            class="grid h-9 w-9 place-items-center rounded-lg bg-brand text-sm font-extrabold text-white"
           >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          <span>Download Clean Data</span>
-        </a>
-      </div>
-    </header>
-
-    <main class="page">
-      <div id="error-banner" class="error-banner" hidden>
-        Unable to load analytics. Confirm the Node.js server is running.
-      </div>
-
-      <section class="kpi-grid" aria-label="Key performance indicators">
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            S4
           </div>
-          <p class="kpi-title">Total Customers</p>
-          <p class="kpi-value" data-kpi="totalCustomers">—</p>
-          <p class="kpi-hint">Original records in the dataset</p>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-              <circle cx="12" cy="16" r="2" />
-            </svg>
-          </div>
-          <p class="kpi-title">Average Age</p>
-          <p class="kpi-value">
-            <span data-kpi="averageAge">—</span>
-            <span class="kpi-unit">years</span>
-          </p>
-          <p class="kpi-hint">Mean customer age</p>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="9" />
-              <circle cx="12" cy="12" r="5" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-            </svg>
-          </div>
-          <p class="kpi-title">Median Age</p>
-          <p class="kpi-value">
-            <span data-kpi="medianAge">—</span>
-            <span class="kpi-unit">years</span>
-          </p>
-          <p class="kpi-hint">Midpoint of the age distribution</p>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="2" y="6" width="20" height="12" rx="2" />
-              <circle cx="12" cy="12" r="2.5" />
-              <path d="M6 12h.01M18 12h.01" />
-            </svg>
-          </div>
-          <p class="kpi-title">Average Spendings</p>
-          <p class="kpi-value">
-            <span data-kpi="averageSpendings">—</span>
-            <span class="kpi-unit">€</span>
-          </p>
-          <p class="kpi-hint">Mean customer spendings</p>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M4 19V5" />
-              <path d="M4 19h16" />
-              <path d="M8 16l3-5 3 3 5-8" />
-            </svg>
-          </div>
-          <p class="kpi-title">Median Spendings</p>
-          <p class="kpi-value">
-            <span data-kpi="medianSpendings">—</span>
-            <span class="kpi-unit">€</span>
-          </p>
-          <p class="kpi-hint">Midpoint of customer spendings</p>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M3 12h18" />
-              <path d="M12 3a14 14 0 0 1 0 18" />
-              <path d="M12 3a14 14 0 0 0 0 18" />
-            </svg>
-          </div>
-          <p class="kpi-title">Countries</p>
-          <p class="kpi-value" data-kpi="countries">—</p>
-          <p class="kpi-hint">Unique countries in the dataset</p>
-        </article>
-      </section>
-
-      <section class="panel chart-panel">
-        <div class="panel-header">
           <div>
-            <h2>Customer Spendings by Country</h2>
-            <p id="spendings-caption" class="panel-caption">
-              Total customer spendings in euros
+            <p class="text-sm font-extrabold tracking-tight">Sell4All</p>
+            <p class="text-xs text-slate-500">Analytics</p>
+          </div>
+        </div>
+        <button
+          id="close-sidebar"
+          class="rounded-md p-1 text-slate-500 hover:bg-slate-100 lg:hidden"
+          aria-label="Close menu"
+        >
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <nav class="flex-1 space-y-1 px-3">
+        <a
+          href="/"
+          class="flex items-center gap-3 rounded-lg bg-brand-light px-3 py-2.5 text-sm font-semibold text-brand"
+        >
+          <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
+          Dashboard
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-ink"
+        >
+          <i data-lucide="bar-chart-3" class="h-4 w-4"></i>
+          Analytics
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-ink"
+        >
+          <i data-lucide="users" class="h-4 w-4"></i>
+          Customers
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-ink"
+        >
+          <i data-lucide="database" class="h-4 w-4"></i>
+          Data
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-ink"
+        >
+          <i data-lucide="file-text" class="h-4 w-4"></i>
+          Reports
+        </a>
+      </nav>
+
+      <div class="mt-auto border-t border-slate-200 px-4 py-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="grid h-9 w-9 place-items-center rounded-lg bg-brand text-xs font-bold text-white"
+          >
+            S4
+          </div>
+          <div>
+            <p class="text-sm font-semibold">Sell4All</p>
+            <p class="text-xs text-slate-500">Second-hand retail</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="lg:pl-60">
+      <header
+        class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur"
+      >
+        <div
+          class="mx-auto flex w-[92%] items-center justify-between gap-4 py-4 lg:w-4/5"
+        >
+          <div class="flex items-center gap-3">
+            <button
+              id="open-sidebar"
+              class="rounded-md p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+              aria-label="Open menu"
+            >
+              <i data-lucide="menu" class="h-5 w-5"></i>
+            </button>
+            <div>
+              <h1 class="text-lg font-extrabold tracking-tight">Sell4All</h1>
+              <p class="text-xs font-medium text-slate-500">
+                Customer Data Analytics
+              </p>
+            </div>
+          </div>
+
+          <a
+            id="download-btn"
+            href="/download/cleaned-dataset"
+            download="cleaned_dataset.csv"
+            class="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-dark"
+          >
+            <i data-lucide="download" class="h-4 w-4"></i>
+            <span>Download Clean Data</span>
+          </a>
+        </div>
+      </header>
+
+      <main class="mx-auto w-[92%] py-6 lg:w-4/5">
+        <section
+          class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"
+          aria-label="Key performance indicators"
+        >
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="users" class="h-4 w-4"></i>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Total Customers
             </p>
-          </div>
-        </div>
-        <div class="chart-frame chart-frame-tall">
-          <canvas id="spendingsChart" aria-label="Customer spendings by country"></canvas>
-        </div>
-      </section>
+            <p class="mt-1 text-xl font-extrabold tracking-tight" data-kpi="totalCustomers">
+              —
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Original customer count</p>
+          </article>
 
-      <section class="secondary-grid">
-        <article class="panel">
-          <div class="panel-header">
-            <div>
-              <h2>Median Age by Country</h2>
-              <p class="panel-caption">Median customer age for each market</p>
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="calendar" class="h-4 w-4"></i>
             </div>
-          </div>
-          <div class="chart-frame chart-frame-tall">
-            <canvas id="medianAgeChart" aria-label="Median age by country"></canvas>
-          </div>
-        </article>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Average Age
+            </p>
+            <p class="mt-1 text-xl font-extrabold tracking-tight">
+              <span data-kpi="averageAge">—</span>
+              <span class="text-xs font-bold text-slate-500">years</span>
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Mean customer age</p>
+          </article>
 
-        <article class="panel overview-panel">
-          <div class="panel-header">
-            <div>
-              <h2>Dataset Overview</h2>
-              <p class="panel-caption">Cleaning pipeline applied to the source CSV</p>
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="target" class="h-4 w-4"></i>
             </div>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Median Age
+            </p>
+            <p class="mt-1 text-xl font-extrabold tracking-tight">
+              <span data-kpi="medianAge">—</span>
+              <span class="text-xs font-bold text-slate-500">years</span>
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Midpoint of customer ages</p>
+          </article>
+
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="wallet" class="h-4 w-4"></i>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Average Spendings
+            </p>
+            <p class="mt-1 text-xl font-extrabold tracking-tight">
+              <span data-kpi="averageSpendings">—</span>
+              <span class="text-xs font-bold text-slate-500">€</span>
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Mean customer spending</p>
+          </article>
+
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="chart-column" class="h-4 w-4"></i>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Median Spendings
+            </p>
+            <p class="mt-1 text-xl font-extrabold tracking-tight">
+              <span data-kpi="medianSpendings">—</span>
+              <span class="text-xs font-bold text-slate-500">€</span>
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Midpoint of spendings</p>
+          </article>
+
+          <article
+            class="rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-brand-light text-brand"
+            >
+              <i data-lucide="globe" class="h-4 w-4"></i>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Countries
+            </p>
+            <p class="mt-1 text-xl font-extrabold tracking-tight" data-kpi="countries">
+              —
+            </p>
+            <p class="mt-1 text-xs text-slate-500">Unique countries</p>
+          </article>
+        </section>
+
+        <section class="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+          <h2 class="text-base font-bold tracking-tight">
+            Customer Spendings by Country
+          </h2>
+          <p class="mt-1 text-sm text-slate-500">
+            Total customer spendings across 35 countries
+          </p>
+          <div class="relative mt-4 h-[600px]">
+            <canvas id="spendingsChart" aria-label="Customer spendings by country"></canvas>
           </div>
+        </section>
 
-          <ol class="pipeline">
-            <li class="pipeline-step">
-              <span class="pipeline-index">01</span>
-              <div>
-                <p class="pipeline-label">Original rows</p>
-                <p class="pipeline-value" data-overview="originalRows">—</p>
-                <p class="pipeline-hint">Source file: dataset-sell4all.csv</p>
-              </div>
-            </li>
-            <li class="pipeline-step">
-              <span class="pipeline-index">02</span>
-              <div>
-                <p class="pipeline-label">Rows after removing spending &lt; 10€</p>
-                <p class="pipeline-value" data-overview="rowsAfterSpendingFilter">—</p>
-                <p class="pipeline-hint" data-overview-hint="spending">Low-value records excluded</p>
-              </div>
-            </li>
-            <li class="pipeline-step">
-              <span class="pipeline-index">03</span>
-              <div>
-                <p class="pipeline-label">Rows after removing duplicates</p>
-                <p class="pipeline-value" data-overview="rowsAfterDuplicates">—</p>
-                <p class="pipeline-hint" data-overview-hint="duplicates">Duplicate customers removed</p>
-              </div>
-            </li>
-            <li class="pipeline-step">
-              <span class="pipeline-index">04</span>
-              <div>
-                <p class="pipeline-label">Final cleaned rows</p>
-                <p class="pipeline-value" data-overview="finalCleanedRows">—</p>
-                <p class="pipeline-hint">Exported to cleaned_dataset.csv</p>
-              </div>
-            </li>
-            <li class="pipeline-step">
-              <span class="pipeline-index">05</span>
-              <div>
-                <p class="pipeline-label">Number of columns exported</p>
-                <p class="pipeline-value" data-overview="exportedColumns">—</p>
-                <p class="pipeline-hint">Country, Age, Gender, Customer spendings</p>
-              </div>
-            </li>
-          </ol>
-        </article>
-      </section>
-    </main>
 
-    <footer class="page-footer">
-      Sell4All data exploration · values computed by the Node.js API
-    </footer>
+        <section class="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+          <h2 class="text-base font-bold tracking-tight">First 5 Customers</h2>
+          <p class="mt-1 text-sm text-slate-500">
+            First five records from the source dataset
+          </p>
+          <div class="mt-4 overflow-x-auto">
+            <table class="min-w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="px-4 py-3">Name</th>
+                  <th class="px-4 py-3">Country</th>
+                  <th class="px-4 py-3">Age</th>
+                  <th class="px-4 py-3">Gender</th>
+                  <th class="px-4 py-3 text-right">Customer Spendings</th>
+                </tr>
+              </thead>
+              <tbody id="first-five-body" class="text-slate-700">
+                <tr>
+                  <td class="px-4 py-3 text-slate-400" colspan="5">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        
+
+        <section class="mt-5 grid gap-4 lg:grid-cols-2">
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+            <h2 class="text-base font-bold tracking-tight">Most Used Countries</h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Number of customers per country
+            </p>
+            <div class="relative mt-4 h-[440px]">
+              <canvas id="countriesUsageChart" aria-label="Most used countries"></canvas>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+            <h2 class="text-base font-bold tracking-tight">Customer Age Distribution</h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Number of customers in each age group
+            </p>
+            <div class="relative mt-4 h-[440px]">
+              <canvas id="ageDistributionChart" aria-label="Customer age distribution"></canvas>
+            </div>
+          </article>
+        </section>
+
+        
+      </main>
+
+      <footer class="px-6 pb-8 text-center text-xs text-slate-500">
+        Sell4All data exploration · values computed by the Node.js API
+      </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="./dashboard.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module" src="./js/dashboard.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
   </body>
 </html>
